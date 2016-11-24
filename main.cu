@@ -1,13 +1,13 @@
 #include <stdio.h>
 
-__global__ void square(float * d_out, float * d_in){
+__global__ void cube(float * d_out, float * d_in){
 	int idx = threadIdx.x;
 	float f = d_in[idx];
-    d_out[idx] = f*f;
+    d_out[idx] = f*f*f;
 }
 
 int main(int argc, char ** argv) {
-	const int ARRAY_SIZE = 64;
+	const int ARRAY_SIZE = 96;
 	const int ARRAY_BYTES = ARRAY_SIZE * sizeof(float);
 
 	// generate the input array on the host
@@ -29,7 +29,7 @@ int main(int argc, char ** argv) {
 	cudaMemcpy(d_in, h_in, ARRAY_BYTES, cudaMemcpyHostToDevice);
 
 	// launch the kernel
-    square<<<1, ARRAY_SIZE>>>(d_out, d_in);
+    cube<<<1, ARRAY_SIZE>>>(d_out, d_in);
 
 	// copy back the result array to the CPU
 	cudaMemcpy(h_out, d_out, ARRAY_BYTES, cudaMemcpyDeviceToHost);
